@@ -1,0 +1,2 @@
+include ':mobile', ':wear', ':common_app'
+rootProject.name='TP2'

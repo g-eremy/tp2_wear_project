@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">CommonApp</string>
+    <string name="query_error">Une erreur est survenue</string>
+</resources>
