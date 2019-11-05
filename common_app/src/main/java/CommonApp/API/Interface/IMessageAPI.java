@@ -1,9 +1,12 @@
 package CommonApp.API.Interface;
 
+import java.util.List;
+
 import CommonApp.Entity.MessageGetEntity;
 import CommonApp.Entity.MessagePostEntity;
 import CommonApp.Entity.VoidEntity;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -11,9 +14,9 @@ import retrofit2.http.POST;
 
 public interface IMessageAPI
 {
-    @POST("")
-    Call<VoidEntity> sendMessage(@Body MessagePostEntity body);
+    @POST(".")
+    Call<ResponseBody> sendMessage(@Body MessagePostEntity body);
 
-    @GET("")
-    Call<MessageGetEntity> getMessages();
+    @GET(".")
+    Call<List<MessageGetEntity>> getMessages();
 }
