@@ -1,10 +1,8 @@
 package CommonApp.Adapter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,7 +37,6 @@ public class MessageAdapter extends ArrayAdapter<MessageGetEntity> implements IO
         this.activity_link = activity_link;
     }
 
-
     @Override
     public View getView(int position, View v, ViewGroup parent)
     {
@@ -48,7 +45,6 @@ public class MessageAdapter extends ArrayAdapter<MessageGetEntity> implements IO
             v = LayoutInflater.from(getContext()).inflate(R.layout.message_adapter, parent, false);
         }
 
-        Context context = getContext();
         MessageGetEntity e = getItem(position);
 
         String message = e.getStudentMessage();
@@ -65,9 +61,7 @@ public class MessageAdapter extends ArrayAdapter<MessageGetEntity> implements IO
         TextView t = v.findViewById(R.id.common_message);
         t.setText(message);
 
-
-
-        v.findViewById(R.id.common_message_adapter_element).setOnClickListener(new ViewMessageListener(this, e));
+        v.setOnClickListener(new ViewMessageListener(this, e));
 
         return v;
     }

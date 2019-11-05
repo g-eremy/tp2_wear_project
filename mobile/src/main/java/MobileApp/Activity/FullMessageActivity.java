@@ -5,7 +5,6 @@ import androidx.fragment.app.Fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.example.tp2.R;
 
@@ -21,8 +20,6 @@ public class FullMessageActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_full_message);
-
-
     }
 
     @Override
