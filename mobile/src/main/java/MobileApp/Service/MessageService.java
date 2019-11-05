@@ -11,9 +11,9 @@ import java.util.List;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 
-import CommonApp.API.AbstractQueryHandler;
-import CommonApp.API.Interface.IMessageAPI;
-import CommonApp.API.RequestHandler;
+import MobileApp.API.AbstractQueryHandler;
+import MobileApp.API.Interface.IMessageAPI;
+import MobileApp.API.RequestHandler;
 import CommonApp.Entity.MessageGetEntity;
 import CommonApp.Entity.MessagePostEntity;
 import CommonApp.ServiceUtil.ServiceBinder;

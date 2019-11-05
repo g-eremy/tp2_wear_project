@@ -14,9 +14,9 @@ import com.example.tp2.R;
 
 import java.util.List;
 
-import CommonApp.API.AbstractQueryHandler;
-import CommonApp.API.Callback.MessageGetCallback;
-import CommonApp.API.Callback.MessagePostCallback;
+import MobileApp.API.AbstractQueryHandler;
+import MobileApp.API.Callback.MessageGetCallback;
+import MobileApp.API.Callback.MessagePostCallback;
 import CommonApp.Entity.MessageGetEntity;
 import CommonApp.Listener.Interface.IOnMessageRefresh;
 import CommonApp.Listener.Interface.IOnMessageSended;

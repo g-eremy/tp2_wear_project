@@ -1,4 +1,4 @@
-package CommonApp.API.Callback;
+package MobileApp.API.Callback;
 
 import android.content.Context;
 import android.widget.ListAdapter;
@@ -6,9 +6,10 @@ import android.widget.ListView;
 
 import java.util.List;
 
-import CommonApp.API.AbstractQueryHandler;
+import MobileApp.API.AbstractQueryHandler;
 import CommonApp.Adapter.MessageAdapter;
 import CommonApp.Entity.MessageGetEntity;
+import MobileApp.Activity.FullMessageActivity;
 
 public class MessageGetCallback extends AbstractQueryHandler<List<MessageGetEntity>>
 {
@@ -24,7 +25,7 @@ public class MessageGetCallback extends AbstractQueryHandler<List<MessageGetEnti
     @Override
     public void callback(List<MessageGetEntity> response, Context context)
     {
-        ListAdapter messages_adapter = new MessageAdapter(context, response);
+        ListAdapter messages_adapter = new MessageAdapter(context, response, FullMessageActivity.class);
         view.setAdapter(messages_adapter);
     }
 }

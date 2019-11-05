@@ -1,10 +1,9 @@
-package CommonApp.API.Interface;
+package MobileApp.API.Interface;
 
 import java.util.List;
 
 import CommonApp.Entity.MessageGetEntity;
 import CommonApp.Entity.MessagePostEntity;
-import CommonApp.Entity.VoidEntity;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;

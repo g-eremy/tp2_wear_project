@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">CommonApp</string>
     <string name="query_error">Une erreur est survenue : impossible de joindre le server</string>
+
+    <string name="common_student_desc">Etudiant</string>
+    <string name="common_gps_desc">Coordonnées GPS</string>
+
 </resources>

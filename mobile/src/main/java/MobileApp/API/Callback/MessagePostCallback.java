@@ -1,9 +1,9 @@
-package CommonApp.API.Callback;
+package MobileApp.API.Callback;
 
 
 import android.content.Context;
 
-import CommonApp.API.AbstractQueryHandler;
+import MobileApp.API.AbstractQueryHandler;
 import CommonApp.Listener.Interface.IOnMessageRefresh;
 import okhttp3.ResponseBody;
 
