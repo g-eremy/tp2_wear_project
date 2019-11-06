@@ -10,7 +10,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name="MobileApp.Activity.FullMessageActivity"></activity>
-        <activity android:name="MobileApp.Activity.TestActivity" />
         <activity android:name="MobileApp.Activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -28,8 +27,9 @@
             android:enabled="true"
             android:exported="true" />
     </application>
-    <uses-permission android:name="android.permission.INTERNET" />
 
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
 
 </manifest>
