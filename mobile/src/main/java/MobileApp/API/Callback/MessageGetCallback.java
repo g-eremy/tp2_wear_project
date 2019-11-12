@@ -25,7 +25,7 @@ public class MessageGetCallback extends AbstractQueryHandler<List<MessageGetEnti
     @Override
     public void callback(List<MessageGetEntity> response, Context context)
     {
-        ListAdapter messages_adapter = new MessageAdapter(context, response, FullMessageActivity.class);
+        ListAdapter messages_adapter = MessageAdapter.create(context, response, FullMessageActivity.class);
         view.setAdapter(messages_adapter);
     }
 }

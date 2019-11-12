@@ -1,5 +1,6 @@
 package MobileApp.Activity;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -15,13 +16,14 @@ import com.example.tp2.R;
 
 import java.util.List;
 
-import CommonApp.Listener.Interface.IOnSyncWear;
-import CommonApp.Listener.SyncWearListener;
 import CommonApp.Entity.MessageGetEntity;
+import CommonApp.Listener.Interface.IOnSyncWear;
 import CommonApp.Listener.Interface.IOnMessageRefresh;
-import CommonApp.Listener.Interface.IOnMessageSended;
+import CommonApp.Listener.Interface.IOnMessageSending;
 import CommonApp.Listener.RefreshMessageListener;
-import CommonApp.Listener.SendMessageListener;
+import CommonApp.Listener.SendingMessageListener;
+import CommonApp.Listener.SyncWearListener;
+import CommonApp.Permission.PermissionHandler;
 import CommonApp.ServiceUtil.Interface.IConnectionCallback;
 import CommonApp.ServiceUtil.ServiceConnection;
 
@@ -32,10 +34,14 @@ import MobileApp.Service.MessageService;
 import MobileApp.Service.WearService;
 
 public class MainActivity extends AppCompatActivity implements
-        IOnMessageRefresh, IOnMessageSended, IOnSyncWear, IConnectionCallback<MessageService>
+        IOnMessageRefresh, IOnMessageSending, IOnSyncWear, IConnectionCallback<MessageService>
 {
-    private ServiceConnection<MessageService> wear_service_connection = new ServiceConnection<>(this);
+    public static int MAIN_PERMISSIONS = 2;
+
+    private ServiceConnection<MessageService> message_service_connection = new ServiceConnection<>(this);
     private MessageService message_service = null;
+
+    private PermissionHandler permission_handler = new PermissionHandler(this, MAIN_PERMISSIONS);
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -43,7 +49,17 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        MessageService.binding(this, wear_service_connection);
+        try
+        {
+            permission_handler.askPermissions();
+        }
+        catch (Exception e)
+        {
+            String message = getResources().getString(R.string.mobile_error);
+            Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+        }
+
+        MessageService.binding(this, message_service_connection);
 
         SwipeRefreshLayout swipe_refresh = findViewById(R.id.mobile_refresh_swipe);
         RefreshMessageListener message_refresh_listener = new RefreshMessageListener(this);
@@ -51,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements
         swipe_refresh.setRefreshing(true);
 
         Button send_button = findViewById(R.id.mobile_send_button);
-        SendMessageListener message_send_listener = new SendMessageListener(this);
+        SendingMessageListener message_send_listener = new SendingMessageListener(this);
         send_button.setOnClickListener(message_send_listener);
 
         Button sync_button = findViewById(R.id.mobile_sync_wear_button);
@@ -59,9 +75,17 @@ public class MainActivity extends AppCompatActivity implements
         updateSyncButtonText(WearService.isRunning());
     }
 
+    @Override
+    public void onDestroy()
+    {
+        super.onDestroy();
+
+        MessageService.unbinding(this, message_service_connection);
+    }
+
     public void error()
     {
-        String error_message = getResources().getString(R.string.mobile_error);
+        String error_message = getResources().getString(R.string.mobile_no_service);
         Toast.makeText(this, error_message, Toast.LENGTH_LONG).show();
     }
 
@@ -96,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onMessageSended(View v)
+    public void onMessageSending(View v)
     {
         if (message_service == null)
         {
@@ -113,7 +137,15 @@ public class MainActivity extends AppCompatActivity implements
 
         MessagePostCallback callback = new MessagePostCallback(this, this);
 
-        message_service.sendMessage(message_str, callback);
+        try
+        {
+            message_service.sendMessage(message_str, callback);
+        }
+        catch(Exception e)
+        {
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+            swipe_refresh.setRefreshing(false);
+        }
     }
 
     @Override
@@ -139,4 +171,27 @@ public class MainActivity extends AppCompatActivity implements
         message_service = service;
         onMessageRefresh();
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults)
+    {
+
+        if (requestCode != MAIN_PERMISSIONS)
+        {
+            return;
+        }
+
+        try
+        {
+            if (!permission_handler.checkAllPermissions())
+            {
+                this.finishAffinity();
+            }
+        }
+        catch (Exception e)
+        {
+
+        }
+    }
+
 }

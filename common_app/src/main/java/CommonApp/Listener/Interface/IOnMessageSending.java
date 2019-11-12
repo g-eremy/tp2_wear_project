@@ -2,7 +2,7 @@ package CommonApp.Listener.Interface;
 
 import android.view.View;
 
-public interface IOnMessageSended
+public interface IOnMessageSending
 {
-    void onMessageSended(View v);
+    void onMessageSending(View v);
 }

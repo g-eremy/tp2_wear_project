@@ -4,6 +4,9 @@
     <string name="mobile_send_button">Envoyer</string>
     <string name="mobile_sync_button">Synchroniser avec la montre</string>
     <string name="mobile_unsync_button">Arrêter la synchronisation</string>
-    <string name="mobile_error">Une erreur est survenue : pas de service disponible</string>
     <string name="mobile_foreground_text">TP2 est synchronisé avec la montre...</string>
+    <string name="mobile_error">Une erreur est survenue</string>
+    <string name="mobile_no_service">Une erreur est survenue : pas de service disponible</string>
+    <string name="mobile_not_gps_service">Une erreur est survenue : le service de localisation n\'est pas disponible</string>
+    <string name="mobile_gps_error">Une erreur est survenue : impossible de vous géolocaliser</string>
 </resources>

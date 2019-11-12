@@ -45,7 +45,7 @@ public class DataService extends Service implements MessageClient.OnMessageRecei
     @Override
     public void onMessageReceived(MessageEvent e)
     {
-        if (!e.getPath().equals(MESSAGE_API_PATH))
+        if (!e.getPath().equals(MESSAGE_WEAR_API_PATH))
         {
             return;
         }

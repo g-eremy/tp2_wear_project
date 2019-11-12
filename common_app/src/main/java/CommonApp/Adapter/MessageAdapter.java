@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.example.common_app.R;
 
+import java.util.Iterator;
 import java.util.List;
 
 import CommonApp.Entity.MessageGetEntity;
@@ -29,6 +30,22 @@ public class MessageAdapter extends ArrayAdapter<MessageGetEntity> implements IO
     public static final String MESSAGE_FULL_NAME = "full_message";
 
     private Class<?> activity_link;
+
+    public static MessageAdapter create(Context context, List<MessageGetEntity> data, Class<?> activity_link)
+    {
+        Iterator<MessageGetEntity> itr = data.iterator();
+
+        while (itr.hasNext())
+        {
+            MessageGetEntity e = itr.next();
+            if (e == null || e.getStudentMessage() == null || e.getStudentMessage().equals(""))
+                itr.remove();
+        }
+
+        MessageAdapter r = new MessageAdapter(context, data, activity_link);
+
+        return r;
+    }
 
     public MessageAdapter(Context context, List<MessageGetEntity> data, Class<?> activity_link)
     {

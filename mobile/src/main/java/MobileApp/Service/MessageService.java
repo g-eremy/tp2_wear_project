@@ -3,8 +3,10 @@ package MobileApp.Service;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
+import android.location.Location;
 import android.os.IBinder;
+
+import com.example.tp2.R;
 
 import java.util.List;
 
@@ -14,11 +16,14 @@ import retrofit2.Call;
 import MobileApp.API.AbstractQueryHandler;
 import MobileApp.API.Interface.IMessageAPI;
 import MobileApp.API.RequestHandler;
+
 import CommonApp.Entity.MessageGetEntity;
 import CommonApp.Entity.MessagePostEntity;
+import CommonApp.ServiceUtil.Interface.IConnectionCallback;
 import CommonApp.ServiceUtil.ServiceBinder;
+import CommonApp.ServiceUtil.ServiceConnection;
 
-public class MessageService extends Service
+public class MessageService extends Service implements IConnectionCallback<GPSService>
 {
     public static int STUDENT_ID = 20140477;
 
@@ -26,11 +31,23 @@ public class MessageService extends Service
     private RequestHandler<IMessageAPI> request_manager;
     private IMessageAPI message_api;
 
+    private ServiceConnection<GPSService> gps_service_connection = new ServiceConnection<>(this);
+    private GPSService gps_service = null;
+
     @Override
     public void onCreate()
     {
         request_manager = new RequestHandler<>(IMessageAPI.class, this);
         message_api = request_manager.getService();
+
+        GPSService.binding(this, gps_service_connection);
+    }
+
+    @Override
+    public void onDestroy()
+    {
+        GPSService.unbinding(this, gps_service_connection);
+        gps_service = null;
     }
 
     @Override
@@ -39,18 +56,32 @@ public class MessageService extends Service
         return binder;
     }
 
+    @Override
+    public void onConnectedCallback(GPSService service)
+    {
+        this.gps_service = service;
+    }
+
     public void getMessages(AbstractQueryHandler<List<MessageGetEntity>> callback)
     {
         Call<List<MessageGetEntity>> call = message_api.getMessages();
         request_manager.request(call, callback);
     }
 
-    public void sendMessage(String message_str, AbstractQueryHandler<ResponseBody> callback)
+    public void sendMessage(String message_str, AbstractQueryHandler<ResponseBody> callback) throws Exception
     {
+        if (gps_service == null)
+        {
+            String error_message = getResources().getString(R.string.mobile_not_gps_service);
+            throw new Exception(error_message);
+        }
+
+        Location location = gps_service.getLastLocation();
+
         MessagePostEntity message_entity = new MessagePostEntity(
                 STUDENT_ID,
-                34.001,
-                3.235,
+                location.getLatitude(),
+                location.getLongitude(),
                 message_str
         );
 
@@ -58,7 +89,7 @@ public class MessageService extends Service
         request_manager.request(call, callback);
     }
 
-    public void sendMessage(String message_str)
+    public void sendMessage(String message_str) throws Exception
     {
         sendMessage(message_str, null);
     }
@@ -73,4 +104,5 @@ public class MessageService extends Service
     {
         context.unbindService(sc);
     }
+
 }
