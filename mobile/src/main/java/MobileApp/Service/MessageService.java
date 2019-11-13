@@ -26,6 +26,7 @@ import CommonApp.ServiceUtil.ServiceConnection;
 public class MessageService extends Service implements IConnectionCallback<GPSService>
 {
     public static int STUDENT_ID = 20140477;
+    public static String DEFAULT_MESSAGE = "message par défaut";
 
     private IBinder binder = new ServiceBinder<MessageService>(this);
     private RequestHandler<IMessageAPI> request_manager;

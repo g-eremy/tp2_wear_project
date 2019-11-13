@@ -18,11 +18,13 @@ public class WearMessageTask implements Runnable
 {
     private Context context;
     private String message;
+    private String path;
 
-    public WearMessageTask(Context context, String message)
+    public WearMessageTask(Context context, String message, String path)
     {
         this.context = context;
         this.message = message;
+        this.path = path;
     }
 
     private Collection<String> getNodes()
@@ -54,7 +56,7 @@ public class WearMessageTask implements Runnable
 
         for (String n : nodes)
         {
-            Wearable.getMessageClient(context).sendMessage(n, MESSAGE_WEAR_API_PATH, message.getBytes(StandardCharsets.UTF_8));
+            Wearable.getMessageClient(context).sendMessage(n, path, message.getBytes(StandardCharsets.UTF_8));
         }
     }
 }

@@ -20,6 +20,8 @@ import com.google.android.gms.wearable.Wearable;
 
 import CommonApp.ServiceUtil.Interface.IConnectionCallback;
 import CommonApp.ServiceUtil.ServiceConnection;
+import MobileApp.API.Callback.MessageWearGetCallback;
+import MobileApp.API.Callback.MessageWearPostCallback;
 import MobileApp.Activity.MainActivity;
 import CommonApp.Task.WearMessageTask;
 
@@ -76,10 +78,16 @@ public class WearService extends Service implements MessageClient.OnMessageRecei
 
     public void sendMessage(String message)
     {
-        WearMessageTask wmr = new WearMessageTask(this, message);
+        WearMessageTask wmr = new WearMessageTask(this, message, MESSAGE_WEAR_API_PATH);
         Thread thread = new Thread(wmr);
 
         thread.start();
+    }
+
+    public void sendMessagesFromServer()
+    {
+        MessageWearGetCallback callback = new MessageWearGetCallback(this);
+        message_service.getMessages(callback);
     }
 
     @Override
@@ -95,7 +103,20 @@ public class WearService extends Service implements MessageClient.OnMessageRecei
         switch(message)
         {
             case MESSAGE_GET_REQUEST:
-                //message_service.getMessages();
+                sendMessagesFromServer();
+                break;
+
+            case MESSAGE_DEFAULT_POST_REQUEST:
+                try
+                {
+                    MessageWearPostCallback callback = new MessageWearPostCallback(this, this);
+                    message_service.sendMessage(MessageService.DEFAULT_MESSAGE, callback);
+                }
+                catch (Exception ex)
+                {
+                    this.sendMessage(GPS_ERROR);
+                }
+
                 break;
         }
     }

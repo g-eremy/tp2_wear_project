@@ -1,25 +1,28 @@
-package MobileApp.Activity;
-
-import androidx.appcompat.app.AppCompatActivity;
-import android.app.Fragment;
+package WearApp.Activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.wearable.activity.WearableActivity;
+
+import android.app.Fragment;
 
 import com.example.tp2.R;
 
 import CommonApp.Fragment.FullMessageFragment;
 
-import static CommonApp.Adapter.MessageAdapter.*;
+import static CommonApp.Adapter.MessageAdapter.MESSAGE_BUNDLE_NAME;
 
-public class FullMessageActivity extends AppCompatActivity
+public class FullMessageActivity extends WearableActivity
 {
-
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_full_message);
+
+
+        // Enables Always-on
+        setAmbientEnabled();
     }
 
     @Override

@@ -55,8 +55,6 @@ public class MainActivity extends AppCompatActivity implements
         }
         catch (Exception e)
         {
-            String message = getResources().getString(R.string.mobile_error);
-            Toast.makeText(this, message, Toast.LENGTH_LONG).show();
         }
 
         MessageService.binding(this, message_service_connection);
@@ -112,11 +110,10 @@ public class MainActivity extends AppCompatActivity implements
         }
 
         ListView messages_view = findViewById(R.id.mobile_message_listview);
-        AbstractQueryHandler<List<MessageGetEntity>> callback =  new MessageGetCallback(this, messages_view);
-        message_service.getMessages(callback);
-
         SwipeRefreshLayout swipe_refresh = findViewById(R.id.mobile_refresh_swipe);
-        swipe_refresh.setRefreshing(false);
+
+        AbstractQueryHandler<List<MessageGetEntity>> callback =  new MessageGetCallback(this, messages_view, swipe_refresh);
+        message_service.getMessages(callback);
     }
 
     @Override

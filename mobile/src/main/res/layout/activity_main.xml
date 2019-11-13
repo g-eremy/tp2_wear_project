@@ -38,13 +38,13 @@
 
         </LinearLayout>
 
-            <ListView
-                android:id="@+id/mobile_message_listview"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:paddingVertical="20dp">
-            </ListView>
+        <ListView
+            android:id="@+id/mobile_message_listview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:paddingVertical="20dp">
+        </ListView>
 
         <LinearLayout
             android:layout_width="match_parent"

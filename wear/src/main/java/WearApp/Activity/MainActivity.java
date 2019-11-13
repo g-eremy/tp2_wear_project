@@ -1,78 +1,153 @@
 package WearApp.Activity;
 
-import android.content.Intent;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.wearable.activity.WearableActivity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
+import android.widget.ListView;
+import android.widget.Toast;
+
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.tp2.R;
-import com.google.android.gms.wearable.DataClient;
-import com.google.android.gms.wearable.DataEvent;
-import com.google.android.gms.wearable.DataEventBuffer;
-import com.google.android.gms.wearable.DataItem;
-import com.google.android.gms.wearable.DataMap;
-import com.google.android.gms.wearable.DataMapItem;
-import com.google.android.gms.wearable.Wearable;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
-public class MainActivity extends WearableActivity implements DataClient.OnDataChangedListener
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
+
+import static CommonApp.Constant.MessageAPIConstant.*;
+
+import CommonApp.Adapter.MessageAdapter;
+import CommonApp.Entity.MessageGetEntity;
+import CommonApp.Listener.Interface.IOnMessageRefresh;
+import CommonApp.Listener.Interface.IOnMessageSending;
+import CommonApp.Listener.RefreshMessageListener;
+import CommonApp.Listener.SendingMessageListener;
+import CommonApp.ServiceUtil.Interface.IConnectionCallback;
+import CommonApp.ServiceUtil.ServiceConnection;
+import WearApp.Receiver.Interface.IReceiver;
+import WearApp.Receiver.MessageReceiver;
+import WearApp.Service.DataService;
+
+import static CommonApp.Constant.MessageAPIConstant.GPS_ERROR;
+
+public class MainActivity extends WearableActivity implements
+        IConnectionCallback<DataService>, IReceiver, IOnMessageRefresh, IOnMessageSending
 {
+    private ServiceConnection<DataService> data_service_connection = new ServiceConnection<>(this);
+    private DataService data_service = null;
+    private MessageReceiver receiver = new MessageReceiver(this);
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button test_button = findViewById(R.id.wear_test_button);
-        test_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent e = new Intent(MainActivity.this, TestActivity.class);
-                startActivity(e);
-            }
-        });
+        DataService.binding(this, data_service_connection);
+
+        SendingMessageListener sending_listener = new SendingMessageListener(this);
+        Button send_message_button = findViewById(R.id.wear_button_default_message_send);
+        send_message_button.setOnClickListener(sending_listener);
+
+        RefreshMessageListener message_refresh_listener = new RefreshMessageListener(this);
+        SwipeRefreshLayout swipe_refresh = findViewById(R.id.wear_refresh_layout);
+        swipe_refresh.setOnRefreshListener(message_refresh_listener);
+        swipe_refresh.setRefreshing(true);
 
         // Enables Always-on
         setAmbientEnabled();
     }
 
     @Override
-    protected void onResume()
+    public void onResume()
     {
         super.onResume();
-        Wearable.getDataClient(this).addListener(this);
+
+        DataService.bindReceiver(this, receiver);
     }
 
     @Override
-    protected void onPause()
+    public void onPause()
     {
         super.onPause();
-        Wearable.getDataClient(this).removeListener(this);
+
+        DataService.unbindReceiver(this, receiver);
     }
 
     @Override
-    public void onDataChanged(DataEventBuffer dataEvents)
+    public void onDestroy()
     {
-        for (DataEvent event : dataEvents)
-        {
-            if (event.getType() != DataEvent.TYPE_CHANGED)
-            {
-                continue;
-            }
+        super.onDestroy();
 
-            // DataItem changed
-            DataItem item = event.getDataItem();
-            if (item.getUri().getPath().compareTo("/mobile") != 0)
-            {
-                continue;
-            }
-
-            DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
-            String e = dataMap.getString("mobile_message");
-            TextView t = findViewById(R.id.wear_message);
-            t.setText(e);
-        }
+        DataService.unbinding(this, data_service_connection);
     }
 
+    @Override
+    public void receive(Context context, String message)
+    {
+        SwipeRefreshLayout swipe_refresh = findViewById(R.id.wear_refresh_layout);
+
+        switch(message)
+        {
+            case GPS_ERROR:
+                String error_message = getResources().getString(R.string.wear_gps_error);
+                Toast.makeText(context, error_message, Toast.LENGTH_SHORT).show();
+
+                break;
+
+            default:
+                Gson gson = new GsonBuilder()
+                        .create();
+
+                Type list_type = new TypeToken<ArrayList<MessageGetEntity>>(){}.getType();
+                List<MessageGetEntity> o = gson.fromJson(message, list_type);
+
+                MessageAdapter message_adapter = MessageAdapter.create(this, o, FullMessageActivity.class);
+                ListView list_view = findViewById(R.id.wear_message_listview);
+                list_view.setAdapter(message_adapter);
+
+                break;
+        }
+
+        swipe_refresh.setRefreshing(false);
+    }
+
+    @Override
+    public void onMessageRefresh()
+    {
+        if (data_service == null)
+        {
+            error();
+            return;
+        }
+
+        data_service.sendMessage(MESSAGE_GET_REQUEST);
+    }
+
+    @Override
+    public void onMessageSending(View v)
+    {
+        data_service.sendMessage(MESSAGE_DEFAULT_POST_REQUEST);
+
+        SwipeRefreshLayout swipe_refresh = findViewById(R.id.wear_refresh_layout);
+        swipe_refresh.setRefreshing(true);
+    }
+
+    @Override
+    public void onConnectedCallback(DataService service)
+    {
+        data_service = service;
+        onMessageRefresh();
+    }
+
+    private void error()
+    {
+        String error_message = getResources().getString(R.string.wear_error);
+        Toast.makeText(this, error_message, Toast.LENGTH_LONG).show();
+    }
 }

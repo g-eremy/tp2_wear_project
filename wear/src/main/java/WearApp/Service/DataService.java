@@ -14,6 +14,7 @@ import com.google.android.gms.wearable.Wearable;
 
 import static CommonApp.Constant.MessageAPIConstant.*;
 import CommonApp.ServiceUtil.ServiceBinder;
+import CommonApp.Task.WearMessageTask;
 
 public class DataService extends Service implements MessageClient.OnMessageReceivedListener
 {
@@ -55,6 +56,16 @@ public class DataService extends Service implements MessageClient.OnMessageRecei
         sendBroadcast(broadcast);
     }
 
+    public void sendMessage(String message)
+    {
+        WearMessageTask wmr = new WearMessageTask(this, message, MESSAGE_MOBILE_API_PATH);
+        Thread thread = new Thread(wmr);
+
+        thread.start();
+    }
+
+    /* BEGIN STATIC METHODS */
+
     public static void bindReceiver(Context context, BroadcastReceiver receiver)
     {
         context.registerReceiver(receiver, new IntentFilter(BROADCAST_NAME));
@@ -75,4 +86,6 @@ public class DataService extends Service implements MessageClient.OnMessageRecei
     {
         context.unbindService(sc);
     }
+
+    /* END STATIC METHODS */
 }

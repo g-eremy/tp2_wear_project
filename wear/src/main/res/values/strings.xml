@@ -1,9 +1,10 @@
 <resources>
     <string name="app_name">TP2</string>
-    <!--
-    This string is used for square devices and overridden by hello_world in
-    values-round/strings.xml for round devices.
-    -->
+
+    <string name="wear_error">Une erreur est survenue</string>
+    <string name="wear_gps_error">Vous devez activer la géolocalisation sur votre téléphone</string>
+    <string name="wear_button_default_message">Envoyer le message par défaut</string>
+    <string name="title_activity_full_message">FullMessageActivity</string>
+
     <string name="hello_world">Hello Square World!</string>
-    <string name="title_activity_test">TestActivity</string>
 </resources>

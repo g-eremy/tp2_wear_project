@@ -2,7 +2,9 @@ package CommonApp.Entity;
 
 import com.google.gson.annotations.SerializedName;
 
-public class MessageGetEntity
+import java.io.Serializable;
+
+public class MessageGetEntity implements Serializable
 {
     @SerializedName("id")
     private int id;
