@@ -88,6 +88,22 @@ public class MainActivity extends WearableActivity implements
     }
 
     @Override
+    public void onEnterAmbient(Bundle ambientDetails) {
+        super.onEnterAmbient(ambientDetails);
+
+        Button button = findViewById(R.id.wear_button_default_message_send);
+        button.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onExitAmbient() {
+        super.onExitAmbient();
+
+        Button button = findViewById(R.id.wear_button_default_message_send);
+        button.setVisibility(View.VISIBLE);
+    }
+
+    @Override
     public void receive(Context context, String message)
     {
         SwipeRefreshLayout swipe_refresh = findViewById(R.id.wear_refresh_layout);

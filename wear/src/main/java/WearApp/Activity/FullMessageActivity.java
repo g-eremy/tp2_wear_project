@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.wearable.activity.WearableActivity;
 
 import android.app.Fragment;
+import android.view.View;
+import android.widget.Button;
 
 import com.example.tp2.R;
 
@@ -23,6 +25,18 @@ public class FullMessageActivity extends WearableActivity
 
         // Enables Always-on
         setAmbientEnabled();
+    }
+
+    @Override
+    public void onEnterAmbient(Bundle ambientDetails) {
+        super.onEnterAmbient(ambientDetails);
+
+    }
+
+    @Override
+    public void onExitAmbient() {
+        super.onExitAmbient();
+
     }
 
     @Override
