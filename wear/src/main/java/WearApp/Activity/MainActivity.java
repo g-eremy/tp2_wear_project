@@ -101,6 +101,10 @@ public class MainActivity extends WearableActivity implements
 
         Button button = findViewById(R.id.wear_button_default_message_send);
         button.setVisibility(View.VISIBLE);
+
+        SwipeRefreshLayout swipe_refresh = findViewById(R.id.wear_refresh_layout);
+        swipe_refresh.setRefreshing(true);
+        onMessageRefresh();
     }
 
     @Override
